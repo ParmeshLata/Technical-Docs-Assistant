@@ -1,0 +1,7 @@
+[
+  {"filename": "request_body.md", "source": "https://fastapi.tiangolo.com/tutorial/body/", "path": "docs/en/docs/tutorial/body.md"},
+  {"filename": "query_parameters.md", "source": "https://fastapi.tiangolo.com/tutorial/query-params/", "path": "docs/en/docs/tutorial/query-params.md"},
+  {"filename": "response_model.md", "source": "https://fastapi.tiangolo.com/tutorial/response-model/", "path": "docs/en/docs/tutorial/response-model.md"},
+  {"filename": "dependencies.md", "source": "https://fastapi.tiangolo.com/tutorial/dependencies/", "path": "docs/en/docs/tutorial/dependencies/index.md"},
+  {"filename": "handling_errors.md", "source": "https://fastapi.tiangolo.com/tutorial/handling-errors/", "path": "docs/en/docs/tutorial/handling-errors.md"}
+]

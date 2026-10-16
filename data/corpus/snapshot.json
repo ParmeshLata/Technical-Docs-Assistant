@@ -1,0 +1,35 @@
+{
+  "revision": "49a09a0d4e876b4e7d6d87fc049710263aaeaa7e",
+  "documents": [
+    {
+      "filename": "request_body.md",
+      "source": "https://fastapi.tiangolo.com/tutorial/body/",
+      "path": "docs/en/docs/tutorial/body.md",
+      "sha256": "a4ea83536fa7b53f5b3509f711efa14ded34050e0b33aecf90a82d057485add8"
+    },
+    {
+      "filename": "query_parameters.md",
+      "source": "https://fastapi.tiangolo.com/tutorial/query-params/",
+      "path": "docs/en/docs/tutorial/query-params.md",
+      "sha256": "84f1c8d52ca903359afcacc06a081217177a84c87a2a7cfe237f7f383e8d0ab6"
+    },
+    {
+      "filename": "response_model.md",
+      "source": "https://fastapi.tiangolo.com/tutorial/response-model/",
+      "path": "docs/en/docs/tutorial/response-model.md",
+      "sha256": "6a00bba4020b36cf1b37a0af059b295944114beed5b7faf339de4b6ec7ab875b"
+    },
+    {
+      "filename": "dependencies.md",
+      "source": "https://fastapi.tiangolo.com/tutorial/dependencies/",
+      "path": "docs/en/docs/tutorial/dependencies/index.md",
+      "sha256": "cbbb1ed197c7c777908b9f1d50f4a5e626f09c416679204465432cc984be036f"
+    },
+    {
+      "filename": "handling_errors.md",
+      "source": "https://fastapi.tiangolo.com/tutorial/handling-errors/",
+      "path": "docs/en/docs/tutorial/handling-errors.md",
+      "sha256": "ce9792b1f08748db4d3db2a4870c931fce275e79360e98f37db2ba8ae064326e"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+[
+  {"question": "How do I define a request body with a Pydantic model?", "expected_status": "answered", "expected_source": "/tutorial/body/", "check": "Imports BaseModel, defines fields, declares a typed endpoint parameter."},
+  {"question": "How do I define optional query parameters with default values?", "expected_status": "answered", "expected_source": "/tutorial/query-params/", "check": "Explains defaults and optional parameters using supported examples."},
+  {"question": "How can response_model prevent private fields from being returned?", "expected_status": "answered", "expected_source": "/tutorial/response-model/", "check": "Explains response filtering and distinct input/output models."},
+  {"question": "How do I inject a shared dependency using Depends?", "expected_status": "answered", "expected_source": "/tutorial/dependencies/", "check": "Shows a dependency callable and Depends annotation."},
+  {"question": "How do I raise HTTPException and return a 404 error?", "expected_status": "answered", "expected_source": "/tutorial/handling-errors/", "check": "Raises HTTPException with status_code=404 and detail."},
+  {"question": "Who won the 2026 football World Cup?", "expected_status": "insufficient_context", "expected_source": null, "check": "Does not answer from model knowledge; returns no sources."},
+  {"question": "How do I configure Kubernetes GPU node autoscaling?", "expected_status": "insufficient_context", "expected_source": null, "check": "Recognizes this topic is outside the five-page corpus."}
+]

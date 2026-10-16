@@ -1,0 +1,15 @@
+# Exact direct dependency versions exercised during development.
+# Python 3.12 recommended. httpx includes SOCKS support for proxy environments.
+fastapi==0.143.1
+uvicorn==0.54.0
+langgraph==1.2.15
+chromadb==1.5.9
+openai==2.54.0
+pydantic-settings==2.16.0
+python-multipart==0.0.32
+beautifulsoup4==4.15.0
+httpx[socks]==0.28.1
+pytest==9.1.1
+pytest-asyncio==1.4.0
+ruff==0.17.0
+-e .[dev]

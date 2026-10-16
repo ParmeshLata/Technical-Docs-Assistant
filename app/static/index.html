@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Technical Documentation Assistant</title>
+  <style>
+    :root{font:16px/1.6 system-ui,sans-serif;color:#243143;background:#f4f6f8}
+    *{box-sizing:border-box}body{margin:0}main{max-width:1000px;margin:auto;padding:38px 24px}
+    header{margin-bottom:30px}h1{font-size:clamp(26px,4vw,38px);line-height:1.15;margin:8px 0 12px;letter-spacing:-1px}
+    .eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#436b8a;font-weight:700}
+    p{margin:10px 0}.muted{color:#66758a;font-size:14px}.layout{display:grid;grid-template-columns:1fr 260px;gap:20px}
+    section,aside{background:white;border:1px solid #dce3e9;border-radius:14px;padding:24px;align-self:start}
+    h2{font-size:17px;margin:0 0 14px}textarea{width:100%;min-height:120px;border:1px solid #b7c5d2;border-radius:8px;padding:12px;font:inherit;resize:vertical}
+    button{background:#205c72;color:white;border:0;border-radius:7px;padding:10px 17px;font:inherit;cursor:pointer}
+    button:disabled{opacity:.5;cursor:wait}.secondary{background:#e9f0f3;color:#205c72}
+    .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+    #answer{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:20px}#sources article{border-top:1px solid #e0e6eb;padding:14px 0}
+    a{color:#205c72}small{font-size:12px}input{max-width:100%}.error{color:#ac3030}.pill{font-size:12px;background:#edf2f6;padding:4px 9px;border-radius:16px}
+    #documents{padding-left:18px;font-size:13px}#trace{font-size:13px}footer{margin-top:24px;font-size:13px;color:#66758a}
+    [hidden]{display:none!important}@media(max-width:740px){.layout{grid-template-columns:1fr}main{padding:24px 15px}}
+  </style>
+</head>
+<body><main>
+  <header><span class="eyebrow">Express Analytics · Intern assignment</span>
+    <h1>Answers with evidence.</h1>
+    <p class="muted">Ask about your indexed technical documentation. Inspect the sources and retrieval steps behind each answer.</p>
+    <span id="health" class="pill">Checking configuration…</span>
+  </header>
+  <div class="layout">
+    <section>
+      <form id="query-form"><label for="question"><h2>Your question</h2></label>
+        <textarea id="question" maxlength="2000" required placeholder="How do I define a request body using Pydantic in FastAPI?"></textarea>
+        <div class="row"><button id="ask">Ask documentation</button><span id="query-status" class="muted" role="status"></span></div>
+      </form>
+      <div id="answer" aria-live="polite"></div><div id="sources"></div>
+      <details id="trace-panel" hidden><summary>Workflow trace</summary><ol id="trace"></ol></details>
+      <div id="feedback" hidden>
+        <p class="muted">Was this answer helpful?</p>
+        <label for="comment" class="muted">Optional comment</label>
+        <textarea id="comment" maxlength="2000" style="min-height:65px"></textarea>
+        <div class="row"><button type="button" class="secondary" data-rating="up">Helpful</button><button type="button" class="secondary" data-rating="down">Needs work</button><span id="feedback-status" role="status"></span></div>
+      </div>
+    </section>
+    <aside><h2>Document corpus</h2><ul id="documents"></ul>
+      <form id="upload-form"><label for="file" class="muted">Add Markdown, text, or HTML</label>
+        <input id="file" type="file" accept=".md,.txt,.html,.htm" required>
+        <div class="row"><button id="upload" class="secondary">Index document</button></div>
+        <p id="upload-status" class="muted" role="status"></p>
+      </form><p class="muted"><a href="/docs">Explore the API</a></p>
+    </aside>
+  </div>
+  <footer>Answers are limited to the indexed corpus. If evidence is insufficient, the assistant will say so.</footer>
+</main><script>
+  const $=id=>document.getElementById(id);let queryId=null;
+  async function api(path,options){const response=await fetch(path,options);const data=await response.json();if(!response.ok)throw new Error(typeof data.detail==='string'?data.detail:JSON.stringify(data.detail));return data;}
+  function element(tag,text){const item=document.createElement(tag);item.textContent=text;return item;}
+  async function refreshDocuments(){const docs=await api('/documents');$('documents').replaceChildren(...docs.map(d=>element('li',`${d.title} · ${d.chunk_count} chunks`)));if(!docs.length)$('documents').append(element('li','No documents indexed yet.'));}
+  $('query-form').addEventListener('submit',async event=>{
+    event.preventDefault();$('ask').disabled=true;$('query-status').textContent='Searching and checking evidence…';$('answer').className='';$('answer').textContent='';$('sources').replaceChildren();$('trace-panel').hidden=true;$('feedback').hidden=true;queryId=null;
+    try{const result=await api('/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:$('question').value})});
+      queryId=result.query_id;$('answer').textContent=result.answer;
+      $('query-status').textContent=`${result.status.replaceAll('_',' ')} · ${result.retrieval_attempts} retrieval attempt(s)`;
+      for(const source of result.sources){const card=document.createElement('article');card.append(element('strong',`[${source.citation}] ${source.title}`),element('p',source.section),element('small',source.excerpt));
+        if(/^https?:\/\//i.test(source.source)){const link=element('a','Open source');link.href=source.source;link.target='_blank';link.rel='noopener noreferrer';card.append(document.createElement('br'),link);}else card.append(element('p',source.source));$('sources').append(card);}
+      $('trace').replaceChildren(...result.trace.map(t=>element('li',`${t.node} · ${t.detail}`)));$('trace-panel').hidden=false;$('feedback').hidden=false;$('feedback-status').textContent='';
+    }catch(error){$('answer').className='error';$('answer').textContent=error.message;$('query-status').textContent='Request failed';}finally{$('ask').disabled=false;}
+  });
+  $('upload-form').addEventListener('submit',async event=>{event.preventDefault();$('upload').disabled=true;$('upload-status').textContent='Indexing…';
+    try{const form=new FormData();form.append('file',$('file').files[0]);const result=await api('/ingest',{method:'POST',body:form});$('upload-status').textContent=result.duplicate?'Already indexed.':`Indexed ${result.document.chunk_count} chunks.`;await refreshDocuments();}catch(error){$('upload-status').textContent=error.message;}finally{$('upload').disabled=false;}});
+  document.querySelectorAll('[data-rating]').forEach(button=>button.addEventListener('click',async()=>{if(!queryId)return;try{await api('/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query_id:queryId,rating:button.dataset.rating,comment:$('comment').value||null})});$('feedback-status').textContent='Feedback saved.';}catch(error){$('feedback-status').textContent=error.message;}}));
+  api('/health').then(data=>{$('health').textContent=data.llm_configured?'LLM key configured':'Set LLM_API_KEY in .env to enable answers';}).catch(()=>{$('health').textContent='API unavailable';});
+  refreshDocuments().catch(error=>{$('documents').replaceChildren(element('li',error.message));});
+</script></body></html>
